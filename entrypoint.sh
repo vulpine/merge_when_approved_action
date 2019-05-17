@@ -44,7 +44,7 @@ is_review_approved() {
     echo "${approvals}/${APPROVALS} approvals"
 
     if [[ "$approvals" == "$APPROVALS" ]]; then
-      echo "${APPROVALS} reached."
+      echo "Required number of approvals (${APPROVALS}) reached."
       return 0
     fi
   done
@@ -68,10 +68,22 @@ is_not_terraform() {
   return 0
 }
 
+merge_pull_request() {
+# https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
+  req=$(curl -sSL -H "${AUTH_HEADER}" -H "{API_HEADER}" -X PUT -d merge_method=merge "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${number}/merge")
+  exit_status=$?
+  echo "DEBUG: PUT request output was $req"
+
+  return $exit_status
+}
+
 if [[ "$action" == "submitted" ]] && [[ "$state" == "approved" ]]; then
   if is_review_approved ; then
     if is_not_terraform ; then
-      echo "This looks OK to me."
+      echo "Pull request does not contain Terraform code. OK to merge"
+      merge_pull_request
+    else
+      echo "This pull request contains Terraform code. Not automerging."
     fi
   fi
 else
