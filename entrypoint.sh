@@ -70,7 +70,7 @@ is_not_terraform() {
 
 merge_pull_request() {
 # https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-  req=$(curl -sSL -H "${AUTH_HEADER}" -H "{API_HEADER}" -X PUT -d merge_method=merge "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${number}/merge")
+  req=$(curl -sSL -H "${AUTH_HEADER}" -H "{API_HEADER}" -X PUT -d '{"merge_method":"merge"}' "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${number}/merge")
   exit_status=$?
   echo "DEBUG: PUT request output was $req"
 
