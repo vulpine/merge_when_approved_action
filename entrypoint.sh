@@ -2,9 +2,8 @@
 
 set -e
 
-if [[ -z "$GITHUB_TOKEN" ]]; then
-  echo "GITHUB_TOKEN is not set."
-  exit 1
+if [[ -z "$ATLANTIS_API_KEY" ]]; then
+  echo "ATLANTIS_API_KEY is not set."
 fi
 
 if [[ -z "$GITHUB_EVENT_NAME" ]]; then
@@ -19,7 +18,7 @@ fi
 
 URI="https://api.github.com"
 API_HEADER="Accept: application/vnd.github.v3+json"
-AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
+AUTH_HEADER="Authorization: token ${ATLANTIS_API_KEY}"
 
 action=$(jq --raw-output .action "$GITHUB_EVENT_PATH")
 state=$(jq --raw-output .review.state "$GITHUB_EVENT_PATH")
